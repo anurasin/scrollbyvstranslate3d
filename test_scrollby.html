@@ -1,6 +1,5 @@
 <head></head>
 <body onload="addTiles()">
-  
    <div id="container">
       <div id="child"/>
    </div>
@@ -8,65 +7,70 @@
    <script>
     /************************************/
       function addTiles(){
-      	for(let i =0;i<=2000;i++){
+      	for(let i =0;i<=5000;i++){
       		addTile(i);
       	}
       }
       
+      let parentDiv = document.getElementById("child")
+
       function addTile(i){
-      	document.getElementById("child").innerHTML += '<div class="notes">'+ i +'</div>';
-      	document.getElementById("child").innerHTML += '<div class="notes1">'+ i +'</div>';
+        let newDiv = document.createElement("div");
+        newDiv.className = "notes";
+      
+        let newDiv1 = document.createElement("div");
+        newDiv1.className = "notes1";
+      
+        newDiv.textContent = i;
+        newDiv1.textContent = i;
+        parentDiv.appendChild(newDiv);
+      	parentDiv.appendChild(newDiv1);
       }
+      
       /************************************/
-
-
-      let currentX = 0;
-      let currentY = 0;
-      const panContainer = document.getElementById("container");
+      const container = document.getElementById("container");
+      const childElement = document.getElementById("child");
       
-      panContainer.addEventListener("mousedown", startPan);
-      panContainer.addEventListener("mouseup", endPan);
-      panContainer.addEventListener("mousemove", panImage);
+      let isDragging = false;
+      let startX, startY, translateX, translateY;
+      translateX = 0;
+      translateY = 0;
       
-      function startPan(event) {
-        currentX = event.clientX;
-        currentY = event.clientY;
-        console.log("start pan");
-      }
+      container.addEventListener('mousedown', e => {
+        isDragging = true;
+        startX = e.clientX;
+        startY = e.clientY;
+      });
       
-      function endPan(event) {
-        currentX = 0;
-        currentY = 0;
-        console.log("end pan");
-      }
+      container.addEventListener('mousemove', e => {
+        if (isDragging) {
       
-      function panImage(event) {
-        console.log("pan image");
-        
-        if (currentX === 0 && currentY === 0) {
-          return;
+          const deltaX = e.clientX - startX;
+          const deltaY = e.clientY - startY;
+      
+          if(deltaX === 0 && deltaY === 0) return;
+      
+          translateX += deltaX;
+          translateY += deltaY;
+          startX = e.clientX;
+          startY = e.clientY;
+      
+          console.log(deltaX,deltaY);
+      
+          childElement.style.transform = `translate3d(${translateX}px, ${translateY}px, 0px)`;
         }
-        
-        const deltaX = event.clientX - currentX;
-        const deltaY = event.clientY - currentY;
+      });
       
-        panContainer.scrollBy({
-          left: -deltaX,
-          top: -deltaY
-          //behavior: "smooth"
-        });
-      
-        currentX = event.clientX;
-        currentY = event.clientY;
-        console.log("pan image end",currentX, currentY, deltaY, deltaX);
-      }
-      
+      container.addEventListener('mouseup', e => {
+        isDragging = false;
+      });      
    </script>
-   <style>
+
+  <style>
     #container {
     width: 100%;
     height: 100%;
-    overflow: auto;
+    overflow: hidden;
     background: gray;
     }
     #child
@@ -75,8 +79,12 @@
     height: 500vh;
     }
     .notes
-    {height: 100px;width: 100px;background: green;float:left;margin: 5px;}
+    {
+    height: 100px;width: 100px;background: green;float:left;margin: 5px;
+    }
     .notes1
-    {height: 100px;width: 100px;background: blue;float:left;margin: 5px;}
-   </style>
+    {
+    height: 100px;width: 100px;background: blue;float:left;margin: 5px;
+    }
+  </style>
 </body>
