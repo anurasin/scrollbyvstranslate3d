@@ -7,14 +7,24 @@
    <script>
     /************************************/
       function addTiles(){
-      	for(let i =0;i<=2000;i++){
+      	for(let i =0;i<=5000;i++){
       		addTile(i);
       	}
       }
       
+      let parentDiv = document.getElementById("child")
+
       function addTile(i){
-      	document.getElementById("child").innerHTML += '<div class="notes">'+ i +'</div>';
-      	document.getElementById("child").innerHTML += '<div class="notes1">'+ i +'</div>';
+        let newDiv = document.createElement("div");
+        newDiv.className = "notes";
+      
+        let newDiv1 = document.createElement("div");
+        newDiv1.className = "notes1";
+      
+        newDiv.textContent = i;
+        newDiv1.textContent = i;
+        parentDiv.appendChild(newDiv);
+      	parentDiv.appendChild(newDiv1);
       }
       
       /************************************/
